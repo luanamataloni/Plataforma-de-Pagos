@@ -4,6 +4,7 @@ import {
     Typography, Table, TableHead, TableRow, TableCell, TableBody,
     TextField, Select, MenuItem, Button, Box, Chip, OutlinedInput
 } from "@mui/material";
+import InputNumber from "../../components/InputNumber.jsx";
 
 export default function DetalleFactura({
                                            items,
@@ -51,23 +52,19 @@ export default function DetalleFactura({
                             </TableCell>
 
                             <TableCell>
-                                <TextField
-                                    type="number"
-                                    value={item.cantidad}
-                                    onChange={(e) => actualizarItem(index, "cantidad", parseInt(e.target.value) )}
-                                    fullWidth
-                                    inputProps={{ min: 1 }}
+                                <InputNumber value={item.cantidad}
+                                             onChange={(nuevoValor) => actualizarItem(index, "cantidad", nuevoValor)}
+                                             label="Cantidad"
                                 />
+                                {/*{item.cantidad}*/}
                             </TableCell>
 
                             <TableCell>
-                                <TextField
-                                    type="number"
-                                    value={item.precio}
-                                    onChange={(e) => actualizarItem(index, "precio", parseFloat(e.target.value) || 0)}
-                                    fullWidth
-                                    inputProps={{ step: "0.01" }}
+                                <InputNumber value={item.precio}
+                                             onChange={(nuevoValor) => actualizarItem(index, "precio", nuevoValor)}
+                                            label="Precio Unitario"
                                 />
+                                {/*{item.precio}*/}
                             </TableCell>
 
                             <TableCell align="right">

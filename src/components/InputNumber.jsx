@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import TextField from '@mui/material/TextField';
 
-const InputNumber = ({ value, onChange }) => {
+const InputNumber = ({ value, onChange, label = "Número" }) => {
     const [isFocused, setIsFocused] = useState(false);
     const [tempValue, setTempValue] = useState('');
 
@@ -37,7 +37,7 @@ const InputNumber = ({ value, onChange }) => {
 
     return (
         <TextField
-            label="Número"
+            label={label}
             type="number"
             variant="outlined"
             value={displayValue}
