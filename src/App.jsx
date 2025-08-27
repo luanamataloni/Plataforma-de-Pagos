@@ -56,6 +56,11 @@ function App() {
                                 <Factura />
                             </Layout>
                         } />
+                        <Route path="/Pruebas" element={
+                            <Layout>
+                                <Pruebas />
+                            </Layout>
+                        } />
                     </Routes>
                 </Router>
             </LocalizationProvider>

@@ -60,6 +60,7 @@ function NavbarMenu() {
                 <Link to="/menu" style={styles.link}>Inicio</Link>
                 <Link to="/registro" style={styles.link}>Registrar Cliente</Link>
                 <Link to="/clientes" style={styles.link}>Lista de Clientes</Link>
+                <Link to="/Pruebas" style={styles.link}>Pruebas</Link>
                 <Link to="/factura" style={styles.link}>Factura</Link>
             </nav>
             <AvatarMenu />
