@@ -63,6 +63,7 @@ export default function Login() {
                 justifyContent: "center",
                 alignItems: "center",
                 bgcolor: "white"
+
             }}>
                 <Box
                     component="form"
