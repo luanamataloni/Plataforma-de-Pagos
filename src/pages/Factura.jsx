@@ -10,16 +10,18 @@ import {
     Typography
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { es } from "date-fns/locale";
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { es } from 'date-fns/locale';
+import { useNavigate } from "react-router-dom";
 import { usePDF } from "../servicios/usePDF.js";
 import DetalleFactura from "./partes-factura/DetalleFactura.jsx";
 import { AppContext } from "../context/AppContext.jsx";
 import HeaderFactura from "./partes-factura/HeaderFactura.jsx";
 
 function Factura() {
-    const { arrClientes } = useContext(AppContext);
+    const navigate = useNavigate();
+    const { arrClientes, agregarFactura } = useContext(AppContext);
 
     const [numeroFactura, setNumeroFactura] = useState("00000173");
     const [clienteSeleccionado, setClienteSeleccionado] = useState("");
@@ -61,67 +63,97 @@ function Factura() {
 
     const totalFactura = items.reduce((acc, item) => acc + item.cantidad * item.precio, 0);
 
+    const handleGuardarFactura = () => {
+        const clienteElegido = arrClientes.find(c => c.id === clienteSeleccionado);
+        const total = items.reduce((sum, item) => sum + (item.cantidad * item.precio), 0);
+
+        const nuevaFactura = {
+            clienteId: clienteSeleccionado,
+            nombreCliente: clienteElegido?.nombre || 'Cliente no especificado',
+            fecha: fecha,
+            items: items,
+            total: total
+        };
+
+        agregarFactura(nuevaFactura);
+        navigate('/facturas'); // Redirige al listado después de guardar
+    };
+
     return (
-        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
-            <Box sx={{ p: 3 }} ref={pdfRef}>
-                <Box sx={{ position: "fixed", bottom: 16, right: 16, zIndex: 5, pointerEvents: "none" }}>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={downloadPDF}
-                        sx={{ borderRadius: 2, boxShadow: 3, fontWeight: "bold", pointerEvents: "auto" }}
-                    >
-                        Descargar PDF
-                    </Button>
-                </Box>
-
-                <HeaderFactura
-                    fecha={fecha}
-                    setFecha={setFecha}
-                    periodo={periodo}
-                    numeroFactura={numeroFactura}
-                    setNumeroFactura={setNumeroFactura}
-                    proveedor={proveedor}
-                    actualizarProveedor={actualizarProveedor}
-                />
-
-                <Paper sx={{ p: 2, mb: 3 }}>
-                    <Typography variant="h6" gutterBottom>DATOS DE CLIENTE</Typography>
-                    <Select value={clienteSeleccionado} onChange={handleClienteChange} fullWidth displayEmpty>
-                        <MenuItem value="" disabled>Seleccione un cliente</MenuItem>
-                        {arrClientes.map((cliente) => (
-                            <MenuItem key={cliente.cuit} value={cliente.cuit}>
-                                {cliente.empresa} - {cliente.titular} (CUIT: {cliente.cuit})
-                            </MenuItem>
-                        ))}
-                    </Select>
-
-                    {clienteSeleccionado && (
-                        <Box sx={{ mt: 2 }}>
-                            {Object.entries(arrClientes.find(c => c.cuit === clienteSeleccionado)).map(([key, val]) => (
-                                <Typography key={key}><strong>{key.toUpperCase()}:</strong> {val}</Typography>
-                            ))}
-                        </Box>
-                    )}
-                </Paper>
-
-                <DetalleFactura
-                    items={items}
-                    actualizarItem={actualizarItem}
-                    eliminarItem={eliminarItem}
-                    periodo={periodo}
-                    serviciosDisponibles={serviciosDisponibles}
-                />
-
-                <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 3 }}>
-                    <Typography variant="h5">
-                        Total: {totalFactura.toLocaleString("es-AR", { style: "currency", currency: "ARS" })}
-                    </Typography>
-                </Box>
-
-                {/* Resto de la factura ... */}
+        <Box sx={{ p: 3 }} ref={pdfRef}>
+            <Box sx={{ position: "fixed", bottom: 16, right: 16, zIndex: 5, pointerEvents: "none" }}>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={downloadPDF}
+                    sx={{ borderRadius: 2, boxShadow: 3, fontWeight: "bold", pointerEvents: "auto" }}
+                >
+                    Descargar PDF
+                </Button>
             </Box>
-        </LocalizationProvider>
+
+            <HeaderFactura
+                fecha={fecha}
+                setFecha={setFecha}
+                periodo={periodo}
+                numeroFactura={numeroFactura}
+                setNumeroFactura={setNumeroFactura}
+                proveedor={proveedor}
+                actualizarProveedor={actualizarProveedor}
+            />
+
+            <Paper sx={{ p: 2, mb: 3 }}>
+                <Typography variant="h6" gutterBottom>DATOS DE CLIENTE</Typography>
+                <Select value={clienteSeleccionado} onChange={handleClienteChange} fullWidth displayEmpty>
+                    <MenuItem value="" disabled>Seleccione un cliente</MenuItem>
+                    {arrClientes.map((cliente) => (
+                        <MenuItem key={cliente.cuit} value={cliente.cuit}>
+                            {cliente.empresa} - {cliente.titular} (CUIT: {cliente.cuit})
+                        </MenuItem>
+                    ))}
+                </Select>
+
+                {clienteSeleccionado && (
+                    <Box sx={{ mt: 2 }}>
+                        {Object.entries(arrClientes.find(c => c.cuit === clienteSeleccionado)).map(([key, val]) => (
+                            <Typography key={key}><strong>{key.toUpperCase()}:</strong> {val}</Typography>
+                        ))}
+                    </Box>
+                )}
+            </Paper>
+
+            <DetalleFactura
+                items={items}
+                actualizarItem={actualizarItem}
+                eliminarItem={eliminarItem}
+                periodo={periodo}
+                serviciosDisponibles={serviciosDisponibles}
+            />
+
+            <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 3 }}>
+                <Typography variant="h5">
+                    Total: {totalFactura.toLocaleString("es-AR", { style: "currency", currency: "ARS" })}
+                </Typography>
+            </Box>
+
+            <Box sx={{ mt: 2, display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleGuardarFactura}
+                >
+                    Guardar Factura
+                </Button>
+                <Button
+                    variant="contained"
+                    onClick={downloadPDF}
+                >
+                    Descargar PDF
+                </Button>
+            </Box>
+
+            {/* Resto de la factura ... */}
+        </Box>
     );
 }
 

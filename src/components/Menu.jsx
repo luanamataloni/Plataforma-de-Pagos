@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import MenuMUI from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 
@@ -54,14 +54,24 @@ function AvatarMenu() {
 
 // Navbar completo
 function NavbarMenu() {
+    const location = useLocation();
+
+    const getLinkStyle = (path) => ({
+        ...styles.link,
+        color: location.pathname === path ? "#ff69b4" : "#333",
+        borderBottom: location.pathname === path ? "2px solid #ff69b4" : "none",
+        paddingBottom: "3px"
+    });
+
     return (
         <header style={styles.header}>
             <nav style={styles.menu}>
-                <Link to="/menu" style={styles.link}>Inicio</Link>
-                <Link to="/registro" style={styles.link}>Registrar Cliente</Link>
-                <Link to="/clientes" style={styles.link}>Lista de Clientes</Link>
-                <Link to="/Pruebas" style={styles.link}>Pruebas</Link>
-                <Link to="/factura" style={styles.link}>Factura</Link>
+                <Link to="/menu" style={getLinkStyle("/menu")}>Inicio</Link>
+                <Link to="/registro" style={getLinkStyle("/registro")}>Registrar Cliente</Link>
+                <Link to="/clientes" style={getLinkStyle("/clientes")}>Lista de Clientes</Link>
+                <Link to="/facturas" style={getLinkStyle("/facturas")}>Listado de Facturas</Link>
+                <Link to="/crear-factura" style={getLinkStyle("/crear-factura")}>Crear Factura</Link>
+                <Link to="/pruebas" style={getLinkStyle("/pruebas")}>Pruebas</Link>
             </nav>
             <AvatarMenu />
         </header>
@@ -87,12 +97,9 @@ const styles = {
     },
     link: {
         textDecoration: "none",
-        color: "#333",
         fontWeight: "500",
-        transition: "color 0.2s",
+        transition: "all 0.2s ease-in-out",
     },
 };
 
 export default NavbarMenu;
-
-

@@ -1,17 +1,26 @@
 import React, { useState } from "react";
-import InputNumber from "../components/InputNumber.jsx";
+import { Box, Typography, Paper } from "@mui/material";
+import CargaImg from "../components/CargaImg";
 
 export default function Pruebas() {
     const [valor, setValor] = useState(5);
+
     return (
-        <div>
-            <h1>Página de Pruebas</h1>
-            <p>Acá vas a poder testear cositas 😉</p>
+        <>
+            <Box sx={{ p: 3 }}>
+                <Paper sx={{ p: 3, mb: 3 }}>
+                    <Typography variant="h4" gutterBottom>
+                        Página de Pruebas
+                    </Typography>
+                    <Typography variant="body1" gutterBottom>
+                        Acá vas a poder testear cositas 😉
+                    </Typography>
 
-            <InputNumber value={valor} onChange={setValor} />
-
-            <p>Valor actual: {valor}</p>
-            {/*<p>Valor duplicado: {valor * 2}</p>*/}
-        </div>
+                    <Box sx={{ mt: 3 }}>
+                        <CargaImg />
+                    </Box>
+                </Paper>
+            </Box>
+        </>
     );
 }
