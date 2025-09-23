@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import RegistroClientes from "./pages/RegistroClientes";
 import ListadoClientes from "./pages/ListadoClientes.jsx";
@@ -9,14 +9,16 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { es } from 'date-fns/locale';
 import Pruebas from "./pages/Pruebas";
 import ListadoFacturas from "./pages/ListadoFacturas";
-
+import Home from "./pages/Home";
+import Box from "@mui/material/Box";
 
 // Componente Layout para las páginas con navbar
 const Layout = ({ children }) => (
-    <>
-        <NavbarMenu />
-        {children}
-    </>
+    <NavbarMenu>
+        <Box sx={{ flex: 1, p: 3, bgcolor: '#f5f5f5', overflowY: 'auto' }}>
+            {children}
+        </Box>
+    </NavbarMenu>
 );
 
 function App() {
@@ -25,12 +27,10 @@ function App() {
             <Router>
                 <Routes>
                     <Route path="/" element={<Login />} />
-                    <Route path="/menu" element={
+                    <Route path="/menu" element={<Navigate to="/home" replace />} />
+                    <Route path="/home" element={
                         <Layout>
-                            <div style={{ padding: '20px' }}>
-                                <h1>Página de Inicio</h1>
-                                <p>Bienvenido al sistema de gestión de clientes y facturas</p>
-                            </div>
+                            <Home />
                         </Layout>
                     } />
                     <Route path="/registro" element={

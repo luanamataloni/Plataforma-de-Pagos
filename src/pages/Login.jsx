@@ -43,7 +43,7 @@ export default function Login() {
             setErrorInfo({ icon: "🔒", text: "Contraseña incorrecta" });
             setOpenError(true);
         } else {
-            navigate("/menu");
+            navigate("/home");
         }
     };
 
@@ -135,7 +135,10 @@ export default function Login() {
                     sx={{
                         width: "100%",
                         maxWidth: "400px",
-                        p: { xs: 2, sm: 3, md: 4 }
+                        p: { xs: 2, sm: 3, md: 4 },
+                        boxShadow: "0 8px 32px rgba(0, 0, 0, 0.2)",
+                        borderRadius: "20px",
+                        bgcolor: "white"
                     }}
                 >
                     {/* Encabezado del formulario */}
