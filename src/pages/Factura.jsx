@@ -15,6 +15,8 @@ import { usePDF } from "../servicios/usePDF.js";
 import { AppContext } from "../context/AppContext.jsx";
 import BusinessIcon from '@mui/icons-material/Business';
 import MultiSelectCombobox from '../components/multi-select-combobox';
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 function Factura() {
     const navigate = useNavigate();
@@ -48,6 +50,7 @@ function Factura() {
 
     const handleServicioChange = (index, newValue) => {
         actualizarItem(index, 'servicio', newValue);
+        actualizarItem(index, 'precio', newValue?.precio || 0); // Establece el precio por defecto al seleccionar un servicio
     };
 
     const actualizarItem = (index, campo, valor) => {
@@ -56,8 +59,7 @@ function Factura() {
                 i === index
                     ? {
                         ...item,
-                        [campo]: valor,
-                        precio: campo === 'servicio' ? valor?.precio || 0 : item.precio
+                        [campo]: valor
                     }
                     : item
             )
@@ -189,53 +191,56 @@ function Factura() {
     };
 
     return (
-        <Box sx={{ p: 3 }} ref={pdfRef}>
+        <Box sx={{ p: 1 , bgcolor: '#F5F5F5'}} ref={pdfRef}>
             <Typography variant="h4" sx={{ mb: 4, fontWeight: 600 }}>
-                Factura
+                  Detalle Factura
             </Typography>
 
-            <Grid container spacing={3} sx={{ mb: 4 }}>
-                <Grid item xs={12} md={2}>
-                    <DatePicker
-                        label="Fecha"
-                        value={fecha}
-                        onChange={(newValue) => setFecha(newValue)}
-                        renderInput={(params) => <TextField {...params} {...commonTextFieldProps} />}
-                    />
+            {/* Inputs de fecha, cliente y número de factura dentro de un rectángulo blanco */}
+            <Paper sx={{ p: 3, mb: 4, bgcolor: '#fff', borderRadius: '20px' }}>
+                <Grid container spacing={3}>
+                    <Grid item xs={12} md={2}>
+                        <DatePicker
+                            label="Fecha"
+                            value={fecha}
+                            onChange={(newValue) => setFecha(newValue)}
+                            renderInput={(params) => <TextField {...params} {...commonTextFieldProps} />}
+                        />
+                    </Grid>
+                    <Grid item xs={12} md={7}>
+                        <MultiSelectCombobox
+                            options={arrClientes}
+                            placeholder="Buscar cliente..."
+                            value={clienteSeleccionado}
+                            onChange={handleClienteChange}
+                            getOptionLabel={(option) => option.empresa || option.nombre || ''}
+                            renderOption={renderClienteOption}
+                            multiple={false}
+                            textFieldProps={commonTextFieldProps}
+                        />
+                    </Grid>
+                    <Grid item xs={12} md={3}>
+                        <TextField
+                            label="Número de Factura"
+                            value={numeroFactura}
+                            onChange={(e) => setNumeroFactura(e.target.value)}
+                            {...commonTextFieldProps}
+                        />
+                    </Grid>
                 </Grid>
-                <Grid item xs={12} md={7}>
-                    <MultiSelectCombobox
-                        options={arrClientes}
-                        placeholder="Buscar cliente..."
-                        value={clienteSeleccionado}
-                        onChange={handleClienteChange}
-                        getOptionLabel={(option) => option.empresa || option.nombre || ''}
-                        renderOption={renderClienteOption}
-                        multiple={false}
-                        textFieldProps={commonTextFieldProps}
-                    />
-                </Grid>
-                <Grid item xs={12} md={3}>
-                    <TextField
-                        label="Número de Factura"
-                        value={numeroFactura}
-                        onChange={(e) => setNumeroFactura(e.target.value)}
-                        {...commonTextFieldProps}
-                    />
-                </Grid>
-            </Grid>
+            </Paper>
 
             {/* Datos del proveedor */}
-            <Paper sx={{ p: 3, mb: 4, bgcolor: '#f8f9fa' }}>
+            <Paper sx={{ p: 3, mb: 4, bgcolor: '#ffffff', borderRadius: '20px' }}>
+                {/* Título de la sección */}
+                <Typography variant="h6" sx={{ mb: 3, display: 'flex', alignItems: 'center' }}>
+                    <Avatar sx={{ bgcolor: '#673ab7', mr: 2 }}>
+                        <BusinessIcon />
+                    </Avatar>
+                    Datos del Proveedor
+                </Typography>
+                {/* Inputs debajo del título Datos del Proveedor */}
                 <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                            <Avatar sx={{ bgcolor: '#673ab7', mr: 2 }}>
-                                <BusinessIcon />
-                            </Avatar>
-                            <Typography variant="h6">Datos del Proveedor</Typography>
-                        </Box>
-                    </Grid>
                     <Grid item xs={12} md={6}>
                         <TextField
                             label="Nombre"
@@ -269,11 +274,16 @@ function Factura() {
             </Paper>
 
             {/* Sección de Detalle de Factura */}
-            {/* Detalle de factura */}
-            <Paper sx={{ p: 3, mb: 4 }}>
-                <Typography variant="h6" sx={{ mb: 3 }}>Detalle de Factura</Typography>
+            <Paper sx={{ p: 3, mb: 4 , bgcolor: '#ffffff', borderRadius: '20px' }}>
+                {/* Título de la sección Detalle de Factura con icono Material UI */}
+                <Typography variant="h6" sx={{ mb: 3, display: 'flex', alignItems: 'center' }}>
+                    <Avatar sx={{ bgcolor: '#673ab7', mr: 2 }}>
+                        <ReceiptLongIcon />
+                    </Avatar>
+                    Detalle de Factura
+                </Typography>
                 {items.map((item, index) => (
-                    <Grid container spacing={2} key={index} sx={{ mb: 2 }}>
+                    <Grid container spacing={2} key={index} sx={{ mb: 2 }} alignItems="center">
                         <Grid item xs={12} md={7}>
                             <MultiSelectCombobox
                                 options={serviciosDisponibles}
@@ -287,7 +297,6 @@ function Factura() {
                             />
                         </Grid>
                         <Grid item xs={6} md={2}>
-                            {/* eslint-disable-next-line */}
                             <TextField
                                 label="Cantidad"
                                 type="number"
@@ -302,17 +311,52 @@ function Factura() {
                                 label="Precio"
                                 type="number"
                                 value={item.precio}
-                                disabled
-                                sx={{
-                                    '& .Mui-disabled': {
-                                        '-webkit-text-fill-color': '#1a237e'
-                                    }
-                                }}
+                                onChange={(e) => actualizarItem(index, 'precio', parseFloat(e.target.value) || 0)}
+                                inputProps={{ min: 0 }}
                                 {...commonTextFieldProps}
                             />
                         </Grid>
-                        <Grid item xs={12} md={1}>
-                            {/* Eliminado el botón de eliminar servicio */}
+                        <Grid item xs={12} md={1} sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+                            {items.length > 1 && (
+                                <Box sx={{
+                                    border: '2px solid',
+                                    borderColor: 'action.disabled', // gris por defecto
+                                    borderRadius: '50%',
+                                    width: 36,
+                                    height: 36,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    bgcolor: '#fff',
+                                    transition: 'border-color 0.2s',
+                                    '&:hover': {
+                                        borderColor: '#1976ff', // celeste al hover
+                                    },
+                                }}>
+                                    <Button
+                                        onClick={() => eliminarItem(index)}
+                                        sx={{
+                                            minWidth: 0,
+                                            width: 48,
+                                            height: 48,
+                                            borderRadius: '50%',
+                                            bgcolor: 'transparent',
+                                            boxShadow: 'none',
+                                            p: 0,
+                                            '& .delete-icon': {
+                                                color: 'action.disabled', // gris por defecto
+                                                transition: 'color 0.2s',
+                                            },
+                                            '&:hover .delete-icon': {
+                                                color: '#1976ff', // celeste al hover
+                                            },
+                                            '&:hover': { bgcolor: 'transparent' }
+                                        }}
+                                    >
+                                        <DeleteIcon className="delete-icon" sx={{ fontSize: 22 }} />
+                                    </Button>
+                                </Box>
+                            )}
                         </Grid>
                     </Grid>
                 ))}
@@ -328,7 +372,7 @@ function Factura() {
                     >
                         Agregar Servicio
                     </Button>
-                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    <Typography variant="h5" sx={{ fontWeight: 600 }}>
                         Total: ${totalFactura}
                     </Typography>
                 </Box>
