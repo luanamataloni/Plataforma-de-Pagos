@@ -8,6 +8,9 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { es } from 'date-fns/locale';
 import Pruebas from "./pages/Pruebas";
+
+import Pruebas2 from "./pages/partes-factura/Pruebas2";
+
 import ListadoFacturas from "./pages/ListadoFacturas";
 import Home from "./pages/Home";
 import Box from "@mui/material/Box";
@@ -58,6 +61,14 @@ function App() {
                             <Pruebas />
                         </Layout>
                     } />
+
+                    <Route path="/pruebas2" element={
+                        <Layout>
+                            <Pruebas2 />
+                        </Layout>
+                    } />
+                    <Route path="*" element={<Navigate to="/" replace />} />
+
                 </Routes>
             </Router>
         </LocalizationProvider>
