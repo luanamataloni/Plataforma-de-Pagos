@@ -9,7 +9,9 @@ import {
     Typography,
     Avatar
 } from "@mui/material";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { DatePicker, LocalizationProvider, StaticDatePicker } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { es } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
 import { usePDF } from "../servicios/usePDF.js";
 import { AppContext } from "../context/AppContext.jsx";
@@ -204,7 +206,12 @@ function Factura() {
                             label="Fecha"
                             value={fecha}
                             onChange={(newValue) => setFecha(newValue)}
-                            renderInput={(params) => <TextField {...params} {...commonTextFieldProps} />}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    {...commonTextFieldProps}
+                                />
+                            )}
                         />
                     </Grid>
                     <Grid item xs={12} md={7}>
@@ -314,6 +321,22 @@ function Factura() {
                                 onChange={(e) => actualizarItem(index, 'precio', parseFloat(e.target.value) || 0)}
                                 inputProps={{ min: 0 }}
                                 {...commonTextFieldProps}
+                            />
+                        </Grid>
+                        {/* Periodo */}
+                        <Grid item xs={12} md={2}>
+                            <DatePicker
+                                label="Periodo"
+                                views={["month", "year"]}
+                                value={item.periodo || new Date()}
+                                onChange={(newValue) => actualizarItem(index, 'periodo', newValue)}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        {...commonTextFieldProps}
+                                        placeholder="Ej: Octubre 2025"
+                                    />
+                                )}
                             />
                         </Grid>
                         <Grid item xs={12} md={1} sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
