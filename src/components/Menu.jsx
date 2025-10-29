@@ -18,6 +18,7 @@ import BugReportIcon from "@mui/icons-material/BugReport";
 import HomeIcon from '@mui/icons-material/Home';
 import logo from "../assets/logo.png";
 import avatarImg from "../assets/lupita.jpg";
+import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 
 // Componente del avatar con menú desplegable
 function AvatarMenu() {
@@ -77,8 +78,8 @@ const menuItems = [
     { text: 'Listado de Facturas', path: '/facturas', icon: <ReceiptIcon /> },
     { text: 'Crear Factura', path: '/crear-factura', icon: <AddIcon /> },
     { text: 'Pruebas', path: '/pruebas', icon: <BugReportIcon /> },
-
     { text: 'Pruebas2', path: '/pruebas2', icon: <BugReportIcon /> },
+    { text: 'Productos', path: '/productos', icon: <AppRegistrationIcon /> },
 ];
 
 function NavbarMenu({ children }) {

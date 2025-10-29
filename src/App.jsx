@@ -14,6 +14,7 @@ import Pruebas2 from "./pages/partes-factura/Pruebas2";
 import ListadoFacturas from "./pages/ListadoFacturas";
 import Home from "./pages/Home";
 import Box from "@mui/material/Box";
+import Productos from './pages/Productos';
 
 // Componente Layout para las páginas con navbar
 const Layout = ({ children }) => (
@@ -65,6 +66,11 @@ function App() {
                     <Route path="/pruebas2" element={
                         <Layout>
                             <Pruebas2 />
+                        </Layout>
+                    } />
+                    <Route path="/productos" element={
+                        <Layout>
+                            <Productos />
                         </Layout>
                     } />
                     <Route path="*" element={<Navigate to="/" replace />} />

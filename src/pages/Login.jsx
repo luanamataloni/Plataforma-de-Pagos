@@ -157,7 +157,7 @@ export default function Login() {
                         variant="body1"
                         sx={{
                             mb: 4,
-                            color: "#666"
+                            color: "white",
                         }}
                     >
                         Ingresa tus credenciales para continuar
